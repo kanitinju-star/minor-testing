@@ -25,18 +25,34 @@ This is a **learning project** — an automated testing repository for the [Mino
 
 > 📄 Full details: [Test Plan](docs/test-plan.md) · [Bug Report](docs/bug-report.md)
 
-### 🐛 Bug Found
+### 🐛 Bugs Found
 
 | Bug ID | Title | Severity | Status |
 |--------|-------|----------|--------|
 | BUG-001 | Server returns 500 instead of 404 on invalid movie ID | Medium | Open |
+| BUG-002 | "Coming Soon" tab has no visual active state | Low | Open |
+| BUG-003 | Search shows blank area instead of "No results" message | Low | Open |
 
 ---
 
 ## 🎯 Testing Strategy & Goals
+
+### Tested Flows
+| Flow | Test Type | Description |
+|------|-----------|-------------|
+| 🎬 Movie Browsing | E2E (Playwright) | Homepage load, movie cards, tab switching |
+| 🔍 Movie Search | Manual (documented) | Search by title, no-results handling |
+| 🎥 Showtime Selection | Manual (documented) | Click movie → view showtimes |
+| 💺 Seat Selection | Manual (documented) | Select/deselect seats, booked seat validation |
+| 💳 Booking & Payment | Manual (documented) | Complete booking flow, coupon application |
+| 🎟️ Discount Calculation | Unit (Vitest) | 7 coupon types: %, fixed, free, BOGO, fixed price |
+| 🔌 Movies API | Integration (Supertest) | GET /movies, error handling on invalid ID |
+
+### Testing Approach
 - **Unit Testing:** Isolated business logic verification (booking/discount calculation) using [Vitest](https://vitest.dev/) — 92.85% coverage on `booking.ts`.
 - **Integration Testing:** API endpoint validation using [Vitest](https://vitest.dev/) and [Supertest](https://www.npmjs.com/package/supertest).
 - **End-to-End (E2E) Testing:** Automated user journeys using [Playwright](https://playwright.dev/).
+- **Manual Testing:** Documented test cases for flows that require live user interaction (seat selection, payment).
 - **QA Documentation:** Test plans and bug reports in [`docs/`](docs/).
 - **CI:** GitHub Actions runs unit tests automatically on every push.
 

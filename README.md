@@ -1,24 +1,44 @@
 # 🎬 Minor Cineplex - QA & Test Automation Suite
 
-[![CI](https://github.com/kanitinju-star/minor-testing/actions/workflows/ci.yml/badge.svg)](https://github.com/kanitinju-star/minor-testing/actions/workflows/ci.yml)
-![Tests](https://img.shields.io/badge/tests-7%20passed-brightgreen)
-![Coverage](https://img.shields.io/badge/coverage-92.85%25-brightgreen)
+[![CI - Unit Tests](https://github.com/kanitinju-star/minor-testing/actions/workflows/ci.yml/badge.svg)](https://github.com/kanitinju-star/minor-testing/actions/workflows/ci.yml)
+![Tests](https://img.shields.io/badge/unit_tests-7%20passed-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage_(booking_logic)-92.85%25-brightgreen)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript)
 ![Playwright](https://img.shields.io/badge/Playwright-1.60-orange?logo=playwright)
 ![Vitest](https://img.shields.io/badge/Vitest-4.x-yellow?logo=vitest)
 
-This project is a dedicated automated testing repository for the **Minor Cineplex** full-stack application. It serves as a professional showcase of modern software quality assurance practices, demonstrating a complete implementation of the **Testing Pyramid**.
+This is a **learning project** — an automated testing repository for the [Minor Cineplex](https://github.com/bzforest/mijor-client) full-stack application, built to practice modern software quality assurance and the **Testing Pyramid** approach (Unit → Integration → E2E).
 
-> 🔗 **Main project:** [minor-cineplex](https://github.com/kanitinju-star) · **This repo** covers the full QA & automation layer.
+> 🔗 **Main project:** [Minor Cineplex (mijor-client)](https://github.com/bzforest/mijor-client) · **This repo** covers the QA & automation layer.
+
+---
+
+## 📋 Test Cases Summary
+
+| ID | Test Case | Type | Status |
+|----|-----------|------|--------|
+| TC-001 | Browse movies on homepage | E2E (Playwright) | ✅ Implemented |
+| TC-002 | Switch to "Coming Soon" tab | E2E (Playwright) | ✅ Implemented |
+| TC-003 | GET /movies returns movie list | Integration (Supertest) | ✅ Implemented |
+| TC-004 | GET /movies/invalid-id returns 404 | Integration (Supertest) | ✅ Implemented |
+| TC-005 | Discount calculation (7 scenarios) | Unit (Vitest) | ✅ 7/7 Passed |
+
+> 📄 Full details: [Test Plan](docs/test-plan.md) · [Bug Report](docs/bug-report.md)
+
+### 🐛 Bug Found
+
+| Bug ID | Title | Severity | Status |
+|--------|-------|----------|--------|
+| BUG-001 | Server returns 500 instead of 404 on invalid movie ID | Medium | Open |
 
 ---
 
 ## 🎯 Testing Strategy & Goals
-- **End-to-End (E2E) Testing:** Automated user journeys using [Playwright](https://playwright.dev/).
+- **Unit Testing:** Isolated business logic verification (booking/discount calculation) using [Vitest](https://vitest.dev/) — 92.85% coverage on `booking.ts`.
 - **Integration Testing:** API endpoint validation using [Vitest](https://vitest.dev/) and [Supertest](https://www.npmjs.com/package/supertest).
-- **Unit Testing:** Isolated business logic verification using [Vitest](https://vitest.dev/).
-- **Structured QA Documentation:** Comprehensive Test Plans and Bug Reports.
-- **Continuous Integration:** GitHub Actions workflow runs tests on every push.
+- **End-to-End (E2E) Testing:** Automated user journeys using [Playwright](https://playwright.dev/).
+- **QA Documentation:** Test plans and bug reports in [`docs/`](docs/).
+- **CI:** GitHub Actions runs unit tests automatically on every push.
 
 ---
 
@@ -27,26 +47,27 @@ This project is a dedicated automated testing repository for the **Minor Cineple
 - **Language:** TypeScript
 - **API Testing:** Supertest
 - **Reporting:** Playwright HTML Report, v8 Coverage
-- **CI/CD:** GitHub Actions
+- **CI:** GitHub Actions (unit tests only)
 
 ---
 
 ## 📊 Test Coverage Report
 
-*Coverage generated from `npm run test:unit -- --coverage` — last run: July 2026*
+> ⚠️ Coverage applies to **booking logic** (`src/utils/booking.ts`) only — not the entire application.
+
+*Generated from `npm run test:unit -- --coverage`*
 
 | File | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s |
 |------|---------|----------|---------|---------|-------------------|
-| **All files** | **92.85** | **71.42** | **100.00** | **92.30** | |
-| `src/utils/booking.ts` | 92.85 | 71.42 | 100.00 | 92.30 | 44 |
+| `src/utils/booking.ts` | **92.85** | **71.42** | **100.00** | **92.30** | 44 |
 
 *(Run `npm run test:unit -- --coverage` to regenerate the latest report)*
 
 ---
 
-## 🚦 CI/CD Pipeline
+## 🚦 CI Pipeline
 
-Every push to `main` triggers the GitHub Actions workflow automatically:
+Every push to `main` triggers GitHub Actions to run **unit tests only**:
 
 ```
 push to main
@@ -56,7 +77,7 @@ push to main
             └── upload coverage artifact
 ```
 
-E2E and Integration tests require a live application server and are run locally or in a dedicated staging environment.
+> **Note:** E2E and Integration tests require a live application server and are run locally or in a dedicated staging environment. This is not a full CI/CD pipeline.
 
 ---
 
@@ -69,8 +90,8 @@ import { test, expect } from '@playwright/test';
 test.describe('Minor Cineplex - Movie Browsing', () => {
   
   test('should display the homepage and movie information', async ({ page }) => {
-    // Navigate to the homepage
-    await page.goto('http://localhost:5173');
+    // Navigate to the homepage (baseURL: http://localhost:3000)
+    await page.goto('/');
 
     // Verify search functionality is visible
     const searchInput = page.getByPlaceholder('Search movie...');
@@ -116,7 +137,7 @@ test.describe('Minor Cineplex - Movie Browsing', () => {
 ```
 minor-cineplex-testing/
 ├── .github/workflows/
-│   └── ci.yml              # GitHub Actions CI pipeline
+│   └── ci.yml              # GitHub Actions CI (unit tests)
 ├── src/
 │   └── utils/
 │       └── booking.ts      # Shared business logic (mirrored from server)
@@ -124,10 +145,12 @@ minor-cineplex-testing/
 │   ├── e2e/                # Playwright end-to-end specs
 │   ├── integration/        # Supertest API integration tests
 │   └── unit/               # Vitest unit tests
-├── docs/                   # QA documentation (Test Plans, Bug Reports)
+├── docs/
+│   ├── test-plan.md        # Test plan document
+│   └── bug-report.md       # Bug report document
 ├── playwright.config.ts
 └── vitest.config.ts
 ```
 
 ---
-*Created by Kanitin Juthasompakorn*
+*Created by Kanitin Juthasompakorn · This is a personal project for practicing and learning QA & Test Automation.*
